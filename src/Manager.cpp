@@ -47,27 +47,27 @@ namespace ClassProject {
         // For Recursive Cases
         BDD_ID topI = isConstant(i) ? 99 : topVar(i);
         BDD_ID topT = isConstant(t) ? 99 : topVar(t);
-        BDD_ID topE = isConstant(e) ? nodes.size() : topVar(e);
+        BDD_ID topE = isConstant(e) ? 99 : topVar(e);
 
         BDD_ID top = std::min({topI, topT, topE});
 
         // Calculate Cofactors
-        BDD_ID i_high;
-        BDD_ID i_low;
+        // Initialise with defaults
+        BDD_ID i_high = i, i_low = i;
+        BDD_ID t_high = t, t_low = t;
+        BDD_ID e_high = e, e_low = e;
+
+        // Override if there is dependency
         if (!isConstant(i) && topVar(i) == top) {
             i_high = nodes[i].high;
             i_low = nodes[i].low;
         }
 
-        BDD_ID t_high;
-        BDD_ID t_low;
         if (!isConstant(t) && topVar(t) == top) {
             t_high = nodes[t].high;
             t_low = nodes[t].low;
         }
 
-        BDD_ID e_high;
-        BDD_ID e_low;
         if (!isConstant(e) && topVar(e) == top) {
             e_high = nodes[e].high;
             e_low = nodes[e].low;
