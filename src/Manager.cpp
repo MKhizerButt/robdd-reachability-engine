@@ -52,19 +52,26 @@ namespace ClassProject {
         BDD_ID top = std::min({topI, topT, topE});
 
         // Calculate Cofactors
-        // Initialise with defaults
-        BDD_ID i_high = i, i_low = i;
-        BDD_ID t_high = t, t_low = t;
-        BDD_ID e_high = e, e_low = e;
+        BDD_ID i_high;
+        BDD_ID i_low;
+        if (!isConstant(i) && topVar(i) == top) {
+            i_high = nodes[i].high;
+            i_low = nodes[i].low;
+        }
 
-        // Using the coFactorTrue
-        i_high = coFactorTrue(i, top);
-        t_high = coFactorTrue(t, top);
-        e_high = coFactorTrue(e, top);
+        BDD_ID t_high;
+        BDD_ID t_low;
+        if (!isConstant(t) && topVar(t) == top) {
+            t_high = nodes[t].high;
+            t_low = nodes[t].low;
+        }
 
-        i_low = coFactorFalse(i, top);
-        t_low = coFactorFalse(t, top);
-        e_low = coFactorFalse(e, top);
+        BDD_ID e_high;
+        BDD_ID e_low;
+        if (!isConstant(e) && topVar(e) == top) {
+            e_high = nodes[e].high;
+            e_low = nodes[e].low;
+        }
 
         // Recursion (highSuccessor & lowSuccessor)
         BDD_ID r_high = ite(i_high, t_high, e_high);
