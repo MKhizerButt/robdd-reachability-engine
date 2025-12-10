@@ -92,8 +92,8 @@ namespace ClassProject {
     }
 
     BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x) {
-        // Return Constant if f == constant
-        if (isConstant(f)) {
+        // Return Constant if f == constant, topVar(f) > x condition makes sure we look only deeper and not above (no dependency)
+        if (isConstant(f)  || isConstant(x) || topVar(f) > x) {
             return f;
         }
 
@@ -101,14 +101,17 @@ namespace ClassProject {
         if (topVar(f) == x) {
             return coFactorTrue(f);
         }
-        // return the id of f if x != topVar
-        else
-            return f;
+        // Find the node wrt x. (If it doesn't exist create it using ITE)
+
+        BDD_ID T = coFactorTrue(nodes[f].high, x);
+        BDD_ID E = coFactorTrue(nodes[f].low, x);
+
+        return ite(topVar(f), T, E);
     }
 
     BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x) {
-        // Return Constant if f == constant
-        if (isConstant(f)) {
+        // Return Constant if f == constant, topVar(f) > x condition makes sure we look only deeper and not above (no dependency)
+        if (isConstant(f) || isConstant(x) || topVar(f) > x) {
             return f;
         }
 
@@ -116,9 +119,12 @@ namespace ClassProject {
         if (topVar(f) == x) {
             return coFactorFalse(f);
         }
-        // return the id of f if x != topVar
-        else
-            return f;
+        // Find the node wrt x. (If it doesn't exist create it using ITE)
+
+        BDD_ID T = coFactorFalse(nodes[f].high, x);
+        BDD_ID E = coFactorFalse(nodes[f].low, x);
+
+        return ite(topVar(f), T, E);
     }
 
     BDD_ID Manager::coFactorTrue(BDD_ID f) { return nodes[f].high; }
