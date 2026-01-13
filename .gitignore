@@ -3,3 +3,4 @@ ci-status.sh
 job-*.log
 *.xml
 *.swp
+result*/

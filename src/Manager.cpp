@@ -87,17 +87,6 @@ namespace ClassProject {
         computedTable[key] = new_id;
 
         return new_id;
-        // // Check if this node already exists, eliminate isomorphic sub-graphs
-        // for (size_t k = 0; k < nodes.size(); k++) {
-        //     if (nodes[k].high == r_high && nodes[k].low == r_low && nodes[k].topVar == top) {
-        //         return k;
-        //     }
-        // }
-        //
-        // // Create new node if not found
-        // BDD_ID new_id = nodes.size();
-        // nodes.push_back({new_id, r_high, r_low, top, ""});
-        // return new_id;
     }
 
     BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x) {
