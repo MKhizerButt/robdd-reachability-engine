@@ -12,19 +12,33 @@ namespace ClassProject {
         nodes.push_back({TRUE_ID, TRUE_ID, TRUE_ID, TRUE_ID, "True"});
     }
 
-    const BDD_ID &Manager::True() { return TRUE_ID; }
-    const BDD_ID &Manager::False() { return FALSE_ID; }
-    bool Manager::isConstant(BDD_ID f) { return (f == TRUE_ID || f == FALSE_ID); }
-    bool Manager::isVariable(BDD_ID x) { return (nodes[x].high == TRUE_ID && nodes[x].low == FALSE_ID); }
-    BDD_ID Manager::topVar(BDD_ID f) { return nodes[f].topVar; }
-    size_t Manager::uniqueTableSize() { return nodes.size(); }
+    const BDD_ID &Manager::True() {
+        return TRUE_ID;
+    }
+
+    const BDD_ID &Manager::False() {
+        return FALSE_ID;
+    }
+
+    bool Manager::isConstant(BDD_ID f) {
+        return (f == TRUE_ID || f == FALSE_ID);
+    }
+
+    bool Manager::isVariable(BDD_ID x) {
+        return (nodes[x].high == TRUE_ID && nodes[x].low == FALSE_ID);
+    }
+
+    BDD_ID Manager::topVar(BDD_ID f) {
+        return nodes[f].topVar;
+    }
+
+    size_t Manager::uniqueTableSize() {
+        return nodes.size();
+    }
 
     BDD_ID Manager::createVar(const std::string &label) {
         BDD_ID new_id = nodes.size();
         nodes.push_back({new_id, TRUE_ID, FALSE_ID, new_id, label});
-
-        // Look for the Key in this struct '{}', and store value = new_id using the keyHasher as defined in Manager.h
-        uniqueTable[{TRUE_ID, FALSE_ID, new_id}] = new_id;
 
         return new_id;
     }
@@ -72,11 +86,11 @@ namespace ClassProject {
 
         // Check if it already exists
         if (uniqueTable.count(uniqueKey)) {
-            BDD_ID R = uniqueTable[uniqueKey];
+            BDD_ID node = uniqueTable[uniqueKey];
 
             // New node not created, save working in the computedTable for use in future recursion
-            computedTable[key] = R;
-            return R;
+            computedTable[key] = node;
+            return node;
         }
 
         // When id is new, pushback in nodes (storage), uniqueTable (Canonicity) and computedTable (for future use in recursions)
@@ -125,16 +139,41 @@ namespace ClassProject {
         return ite(topVar(f), T, E);
     }
 
-    BDD_ID Manager::coFactorTrue(BDD_ID f) { return nodes[f].high; }
-    BDD_ID Manager::coFactorFalse(BDD_ID f) { return nodes[f].low; }
+    BDD_ID Manager::coFactorTrue(BDD_ID f) {
+        return nodes[f].high;
+    }
 
-    BDD_ID Manager::and2(BDD_ID a, BDD_ID b) { return ite(a, b, FALSE_ID); }
-    BDD_ID Manager::or2(BDD_ID a, BDD_ID b) { return ite(a, TRUE_ID, b); }
-    BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) { return or2(and2(neg(a), b), and2(a, neg(b))); }
-    BDD_ID Manager::neg(BDD_ID a) { return ite(a, FALSE_ID, TRUE_ID); }
-    BDD_ID Manager::nand2(BDD_ID a, BDD_ID b) { return neg(and2(a, b)); }
-    BDD_ID Manager::nor2(BDD_ID a, BDD_ID b) { return neg(or2(a, b)); }
-    BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b) { return neg(xor2(a, b)); }
+    BDD_ID Manager::coFactorFalse(BDD_ID f) {
+        return nodes[f].low;
+    }
+
+    BDD_ID Manager::and2(BDD_ID a, BDD_ID b) {
+        return ite(a, b, FALSE_ID);
+    }
+
+    BDD_ID Manager::or2(BDD_ID a, BDD_ID b) {
+        return ite(a, TRUE_ID, b);
+    }
+
+    BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) {
+        return or2(and2(neg(a), b), and2(a, neg(b)));
+    }
+
+    BDD_ID Manager::neg(BDD_ID a) {
+        return ite(a, FALSE_ID, TRUE_ID);
+    }
+
+    BDD_ID Manager::nand2(BDD_ID a, BDD_ID b) {
+        return neg(and2(a, b));
+    }
+
+    BDD_ID Manager::nor2(BDD_ID a, BDD_ID b) {
+        return neg(or2(a, b));
+    }
+
+    BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b) {
+        return neg(xor2(a, b));
+    }
 
     void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root) {
         // Check for UniqueIDs
@@ -173,7 +212,6 @@ namespace ClassProject {
             std::cerr << "Error: Unable to open file " << filepath << std::endl;
             return;
         }
-
 
         outputFile << "digraph BDD {" << std::endl;
         outputFile << "    rankdir=TB;" << std::endl;
