@@ -75,3 +75,14 @@ target_link_libraries(benchmark_tool Manager)
 
 add_executable(verify_tool src/verify/main_verify.cpp)
 target_link_libraries(verify_tool Manager)
+
+add_executable(VDSProject_reachability
+        src/reachability/main_test.cpp
+        src/reachability/Reachability.cpp
+        src/reachability/Reachability.h
+        src/reachability/Tests.h
+        src/reachability/ReachabilityInterface.h
+)
+
+target_link_libraries(VDSProject_reachability Manager)
+target_link_libraries(VDSProject_reachability gtest gtest_main pthread)
