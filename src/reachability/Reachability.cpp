@@ -2,8 +2,8 @@
 #include <iostream>
 
 namespace ClassProject {
-    Reachability::Reachability(unsigned int stateSize, unsigned int inputSize) : ReachabilityInterface(stateSize, inputSize) {
-
+    Reachability::Reachability(unsigned int stateSize, unsigned int inputSize) : ReachabilityInterface(
+        stateSize, inputSize) {
         if (stateSize == 0) {
             throw std::runtime_error("State size cannot be zero");
         }
