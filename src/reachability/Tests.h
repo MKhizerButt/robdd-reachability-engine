@@ -91,20 +91,20 @@ TEST_F(ReachabilityTest, FSM_3Bit_Counter_With_Input) { /* NOLINT */
     BDD_ID s2 = states.at(2);
     BDD_ID enable = inputs.at(0);
 
-    // 2. Define Transition Functions for a 3-bit Counter
+
+    // 2. Define Transition Functions for a 3-bit saturating counter
     // Next state logic:
     // If enable=0: Hold state (s' = s)
-    // If enable=1: Increment state (s' = s + 1)
-    
-    // s0_next = s0 XOR enable
-    BDD_ID s0_next = fsm3->xor2(s0, enable);
+    // If enable=1: Increment state until 111, then hold at 111
 
-    // s1_next = s1 XOR (s0 AND enable)
-    BDD_ID carry0 = fsm3->and2(s0, enable);
+    // For no-wrap 3-bit counter implementation.
+    BDD_ID at_max = fsm3->and2(s2, fsm3->and2(s1, s0));
+    BDD_ID inc = fsm3->and2(enable, fsm3->neg(at_max));
+
+    BDD_ID s0_next = fsm3->xor2(s0, inc);
+    BDD_ID carry0  = fsm3->and2(s0, inc);
     BDD_ID s1_next = fsm3->xor2(s1, carry0);
-
-    // s2_next = s2 XOR (s1 AND s0 AND enable)
-    BDD_ID carry1 = fsm3->and2(s1, carry0);
+    BDD_ID carry1  = fsm3->and2(s1, carry0);
     BDD_ID s2_next = fsm3->xor2(s2, carry1);
 
     std::vector<BDD_ID> transitionFunctions = {s0_next, s1_next, s2_next};
@@ -142,12 +142,14 @@ TEST_F(ReachabilityTest, FSM_3Bit_Counter_With_Input) { /* NOLINT */
     // Check "Hold" functionality via Unreachable test? 
     // In this specific counter, all 2^3=8 states are reachable.
 
-    // Let's test reachability from a non-zero init state.
-    // This counter is modulo-8, so it wraps from 111 -> 000.
-    // Starting at 2 (010), state 1 (001) is reachable after 7 increments.
-
-    EXPECT_TRUE(fsm3->isReachable({true, false, false})); // Target 1 (001)
-    EXPECT_EQ(fsm3->stateDistance({true, false, false}), 7);
+    // Let's create an unreachable scenario by changing Init State
+    // If we start at 000, and Reset logic was present, we might test that.
+    // Instead, let's test a case where we start at 2 (010).
+    // The counter only counts UP. So 1 (001) should be unreachable (distance -1).
+    
+    fsm3->setInitState({false, true, false}); // Start at 2 (010)
+    EXPECT_FALSE(fsm3->isReachable({true, false, false})); // Target 1 (001)
+    EXPECT_EQ(fsm3->stateDistance({true, false, false}), -1);
 
     
     // Target 3 (011) should be reachable in 1 step (2 -> 3)
