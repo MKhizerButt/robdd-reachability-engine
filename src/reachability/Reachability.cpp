@@ -31,6 +31,8 @@ namespace ClassProject {
             BDD_ID equivalence = xnor2(currentStateVars[i], nextStateVars[i]);
             transitionRelation = and2(equivalence, transitionRelation);
         }
+        layers.clear();
+        totalReached = False();
     }
 
     const std::vector<BDD_ID> &Reachability::getStates() const {
@@ -55,6 +57,8 @@ namespace ClassProject {
                 initialState = and2(initialState, neg(currentStateVars[i]));
             }
         }
+        layers.clear();
+        totalReached = False();
     }
 
     void Reachability::setTransitionFunctions(const std::vector<BDD_ID> &transitionFunctions) {
@@ -75,6 +79,8 @@ namespace ClassProject {
             BDD_ID equivalence = xnor2(transitionFunctions[i], nextStateVars[i]);
             transitionRelation = and2(equivalence, transitionRelation);
         }
+        layers.clear();
+        totalReached = False();
     }
 
     int Reachability::stateDistance(const std::vector<bool> &stateVector) {
@@ -91,45 +97,41 @@ namespace ClassProject {
             }
         }
 
-        // 'CR': Current Reachable states. Starts with just Initial State.
-        BDD_ID CR = initialState;
+        // Initialize cache if empty
+        if (layers.empty()) {
+            layers.push_back(initialState);
+            totalReached = initialState;
+        }
 
-        // 'visited': All states we have ever seen.
-        BDD_ID visited = CR;
-
-        int distance = 0;
-
-        // Loop until CR holds. If it is False, no new states
-        while (CR != False()) {
-            if (and2(target, CR) != False()) {
-                // Does target exists in CR
-                // fixed point reached. CR is now the symbolic representation of the set of reachable states
-                return distance;
+        // Check if target is already in computed layers
+        for (size_t i = 0; i < layers.size(); i++) {
+            if (and2(target, layers[i]) != False()) {
+                return i;
             }
+        }
 
+        // Resume BFS from the last computed layer
+        BDD_ID CR = layers.back();
+
+        while (CR != False()) {
             // Image Computation
-
             // Conjunction of CR and Tau (s, x, s')
             BDD_ID temp = and2(CR, transitionRelation);
 
-            // Quantify out Current State (s) and Inputs (x). CoFactor (from Manager) is equivalent
-            // Quantify States (s0, s1, ...)
+            // Quantify out Current State (s) and Inputs (x)
             for (auto &var: currentStateVars) {
                 temp = or2(coFactorTrue(temp, var), coFactorFalse(temp, var));
             }
-
-            // Quantify Inputs (x, ...)
             for (auto &var: inputVars) {
                 temp = or2(coFactorTrue(temp, var), coFactorFalse(temp, var));
             }
             // temp: img(s'). Consists of only next states, described using s'
 
-            // For the next iteration s' needs to be replaced with s by equality mapping
+            // Rename s' -> s
             BDD_ID mapping = True();
             for (size_t i = 0; i < currentStateVars.size(); i++) {
                 mapping = and2(mapping, xnor2(currentStateVars[i], nextStateVars[i]));
             }
-
             BDD_ID temp2 = and2(temp, mapping);
 
             // Quantify next state vars (s')
@@ -139,12 +141,22 @@ namespace ClassProject {
 
             // temp2: img(s). All sets reachable in next step
 
-            // Save only new states. If already visited no new states, else img(s)
-            BDD_ID next_CR = ite(visited, False(), temp2);
+            // Get only NEW states: temp2 AND NOT totalReached
+            BDD_ID next_CR = ite(totalReached, False(), temp2);
 
+            if (next_CR == False()) {
+                return -1; // Fixed point reached, target not found
+            }
+
+            // Update cache
+            layers.push_back(next_CR);
+            totalReached = or2(totalReached, next_CR);
             CR = next_CR;
-            visited = or2(visited, next_CR); // Add new states to visited list
-            distance++;
+
+            // Check if found
+            if (and2(target, CR) != False()) {
+                return layers.size() - 1;
+            }
         }
 
         return -1; // Target not reachable
