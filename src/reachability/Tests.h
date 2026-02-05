@@ -141,15 +141,14 @@ TEST_F(ReachabilityTest, FSM_3Bit_Counter_With_Input) { /* NOLINT */
     
     // Check "Hold" functionality via Unreachable test? 
     // In this specific counter, all 2^3=8 states are reachable.
-    
-    // Let's create an unreachable scenario by changing Init State
-    // If we start at 000, and Reset logic was present, we might test that.
-    // Instead, let's test a case where we start at 2 (010).
-    // The counter only counts UP. So 1 (001) should be unreachable (distance -1).
-    
-    fsm3->setInitState({false, true, false}); // Start at 2 (010)
-    EXPECT_FALSE(fsm3->isReachable({true, false, false})); // Target 1 (001)
-    EXPECT_EQ(fsm3->stateDistance({true, false, false}), -1);
+
+    // Let's test reachability from a non-zero init state.
+    // This counter is modulo-8, so it wraps from 111 -> 000.
+    // Starting at 2 (010), state 1 (001) is reachable after 7 increments.
+
+    EXPECT_TRUE(fsm3->isReachable({true, false, false})); // Target 1 (001)
+    EXPECT_EQ(fsm3->stateDistance({true, false, false}), 7);
+
     
     // Target 3 (011) should be reachable in 1 step (2 -> 3)
     EXPECT_EQ(fsm3->stateDistance({true, true, false}), 1);
