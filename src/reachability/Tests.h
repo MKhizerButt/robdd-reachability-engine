@@ -156,4 +156,91 @@ TEST_F(ReachabilityTest, FSM_3Bit_Counter_With_Input) { /* NOLINT */
     EXPECT_EQ(fsm3->stateDistance({true, true, false}), 1);
 }
 
+// 3-bit Up/Down Counter with 2 Inputs
+// Inputs: Enable (0), Down (1)
+// Function:
+// - Enable=0: Hold
+// - Enable=1, Down=0: Count Up (wraps 7->0)
+// - Enable=1, Down=1: Count Down (wraps 0->7)
+TEST_F(ReachabilityTest, FSM_3Bit_Control_2Inputs) { /* NOLINT */
+    auto fsm = std::make_unique<ClassProject::Reachability>(3, 2);
+    auto states = fsm->getStates();
+    auto inputs = fsm->getInputs();
+
+    // Bits: s0=LSB, s2=MSB
+    BDD_ID s0 = states.at(0);
+    BDD_ID s1 = states.at(1);
+    BDD_ID s2 = states.at(2);
+
+    BDD_ID enable = inputs.at(0);
+    BDD_ID down = inputs.at(1);
+
+    // 1. Define Up (Increment) Logic
+    // s_inc = s + 1
+    BDD_ID s0_inc = fsm->xor2(s0, fsm->True());
+    BDD_ID c0 = fsm->and2(s0, fsm->True());
+    BDD_ID s1_inc = fsm->xor2(s1, c0);
+    BDD_ID c1 = fsm->and2(s1, c0);
+    BDD_ID s2_inc = fsm->xor2(s2, c1);
+
+    // 2. Define Down (Decrement) Logic
+    // s_dec = s - 1
+    BDD_ID s0_dec = fsm->xor2(s0, fsm->True());
+    BDD_ID b0 = fsm->neg(s0);
+    BDD_ID s1_dec = fsm->xor2(s1, b0);
+    BDD_ID b1 = fsm->and2(b0, fsm->neg(s1));
+    BDD_ID s2_dec = fsm->xor2(s2, b1);
+
+    // 3. Selection Logic
+    // next = (!en & current) | (en & (!down & inc | down & dec))
+
+    BDD_ID en_off = fsm->neg(enable);
+    BDD_ID down_off = fsm->neg(down);
+
+    // Helper to select: if (cond) then true_bdd else false_bdd
+    // select(cond, t, f) = (cond & t) | (!cond & f)
+    auto select = [&](BDD_ID cond, BDD_ID t, BDD_ID f) {
+        return fsm->or2(fsm->and2(cond, t), fsm->and2(fsm->neg(cond), f)); 
+    };
+    // Note: or2 acts as helper, or standard or2. The internal implementation prolly supports it...
+
+    // Next State Functions
+    BDD_ID s0_next = select(enable, 
+                        select(down, s0_dec, s0_inc), 
+                        s0);
+    BDD_ID s1_next = select(enable, 
+                        select(down, s1_dec, s1_inc), 
+                        s1);
+    BDD_ID s2_next = select(enable, 
+                        select(down, s2_dec, s2_inc), 
+                        s2);
+
+    fsm->setTransitionFunctions({s0_next, s1_next, s2_next});
+    fsm->setInitState({false, false, false}); // 000
+
+    // 4. Verify Distances
+    // Distance 0: State 0
+    EXPECT_EQ(fsm->stateDistance({false, false, false}), 0);
+
+    // Distance 1: 
+    // - State 1 (001) via Up
+    EXPECT_EQ(fsm->stateDistance({true, false, false}), 1);
+    // - State 7 (111) via Down (wrapping)
+    EXPECT_EQ(fsm->stateDistance({true, true, true}), 1);
+
+    // Distance 2:
+    // - State 2 (010): 0->1->2
+    EXPECT_EQ(fsm->stateDistance({false, true, false}), 2);
+    // - State 6 (110): 0->7->6 (Shortest path via Down)
+    // If it only counted up, this would be distance 6.
+    EXPECT_EQ(fsm->stateDistance({false, true, true}), 2);
+    
+    // Distance 3: State 3 (011) and 5 (101)
+    EXPECT_EQ(fsm->stateDistance({true, true, false}), 3);
+    EXPECT_EQ(fsm->stateDistance({true, false, true}), 3);
+
+    // Distance 4: State 4 (100) - Farthest point
+    EXPECT_EQ(fsm->stateDistance({false, false, true}), 4);
+}
+
 #endif
