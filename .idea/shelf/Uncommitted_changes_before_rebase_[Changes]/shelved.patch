@@ -1,0 +1,120 @@
+Index: job-compile_and_run-56.log
+===================================================================
+diff --git a/job-compile_and_run-56.log b/job-compile_and_run-56.log
+deleted file mode 100644
+--- a/job-compile_and_run-56.log	(revision 4f20a766abc0fc0375d2db30c0611ccfb116a81f)
++++ /dev/null	(revision 4f20a766abc0fc0375d2db30c0611ccfb116a81f)
+@@ -1,43 +0,0 @@
+-[0KRunning with gitlab-runner 18.5.0 (bda84871)[0;m
+-[0K  on VDSProject IjUM3UmA-, system ID: s_ed63bb9e5722[0;m
+-section_start:1764191811:prepare_executor
+-[0K[0K[36;1mPreparing the "docker" executor[0;m[0;m
+-[0KUsing Docker executor with image gcc:12 ...[0;m
+-[0KUsing effective pull policy of [always] for container gcc:12[0;m
+-[0KPulling docker image gcc:12 ...[0;m
+-[0KUsing docker image sha256:75d439866a6baa1292536147f2c01f33465ebe13a2f0038d0bc979abf4ff93e6 for gcc:12 with digest gcc@sha256:40f2fc7ef42f1a60ab215cb8ec7225992ae1c672a138ed5620e30f4796de5d29 ...[0;m
+-section_end:1764191814:prepare_executor
+-[0Ksection_start:1764191814:prepare_script
+-[0K[0K[36;1mPreparing environment[0;m[0;m
+-[0KUsing effective pull policy of [always] for container sha256:2e1e6e290005eeb08e87c3e49012887510cc8c0b6ae1ec222173f1982ded1371[0;m
+-Running on runner-ijum3uma--project-79-concurrent-0 via chianti...
+-section_end:1764191814:prepare_script
+-[0Ksection_start:1764191814:get_sources
+-[0K[0K[36;1mGetting source from Git repository[0;m[0;m
+-[32;1mGitaly correlation ID: 01KB10DDXF8RB6GHN3880AYCQY[0;m
+-[32;1mFetching changes with git depth set to 20...[0;m
+-Reinitialized existing Git repository in /builds/extern/vdscp/vdscp2526/vdscp04/.git/
+-[32;1mCreated fresh repository.[0;m
+-[32;1mChecking out bf7bf58a as detached HEAD (ref is main)...[0;m
+-Removing build/
+-
+-[32;1mSkipping Git submodules setup[0;m
+-section_end:1764191815:get_sources
+-[0Ksection_start:1764191815:step_script
+-[0K[0K[36;1mExecuting "step_script" stage of the job script[0;m[0;m
+-[0KUsing effective pull policy of [always] for container gcc:12[0;m
+-[0KUsing docker image sha256:75d439866a6baa1292536147f2c01f33465ebe13a2f0038d0bc979abf4ff93e6 for gcc:12 with digest gcc@sha256:40f2fc7ef42f1a60ab215cb8ec7225992ae1c672a138ed5620e30f4796de5d29 ...[0;m
+-[32;1m$ echo "Preparing build directory..."[0;m
+-Preparing build directory...
+-[32;1m$ mkdir build[0;m
+-[32;1m$ cd build[0;m
+-[32;1m$ echo "Running CMake to configure the project..."[0;m
+-Running CMake to configure the project...
+-[32;1m$ cmake ..[0;m
+-/usr/bin/bash: line 169: cmake: command not found
+-section_end:1764191815:step_script
+-[0Ksection_start:1764191815:cleanup_file_variables
+-[0K[0K[36;1mCleaning up project directory and file based variables[0;m[0;m
+-section_end:1764191816:cleanup_file_variables
+-[0K[31;1mERROR: Job failed: exit code 1
+-[0;m
+Index: job-compile_and_run-68.log
+===================================================================
+diff --git a/job-compile_and_run-68.log b/job-compile_and_run-68.log
+deleted file mode 100644
+--- a/job-compile_and_run-68.log	(revision 4f20a766abc0fc0375d2db30c0611ccfb116a81f)
++++ /dev/null	(revision 4f20a766abc0fc0375d2db30c0611ccfb116a81f)
+@@ -1,42 +0,0 @@
+-[0KRunning with gitlab-runner 18.5.0 (bda84871)[0;m
+-[0K  on VDSProject IjUM3UmA-, system ID: s_ed63bb9e5722[0;m
+-section_start:1764246427:prepare_executor
+-[0K[0K[36;1mPreparing the "docker" executor[0;m[0;m
+-[0KUsing Docker executor with image gcc:12 ...[0;m
+-[0KUsing effective pull policy of [always] for container gcc:12[0;m
+-[0KPulling docker image gcc:12 ...[0;m
+-[0KUsing docker image sha256:75d439866a6baa1292536147f2c01f33465ebe13a2f0038d0bc979abf4ff93e6 for gcc:12 with digest gcc@sha256:40f2fc7ef42f1a60ab215cb8ec7225992ae1c672a138ed5620e30f4796de5d29 ...[0;m
+-section_end:1764246429:prepare_executor
+-[0Ksection_start:1764246429:prepare_script
+-[0K[0K[36;1mPreparing environment[0;m[0;m
+-[0KUsing effective pull policy of [always] for container sha256:2e1e6e290005eeb08e87c3e49012887510cc8c0b6ae1ec222173f1982ded1371[0;m
+-Running on runner-ijum3uma--project-79-concurrent-0 via chianti...
+-section_end:1764246429:prepare_script
+-[0Ksection_start:1764246429:get_sources
+-[0K[0K[36;1mGetting source from Git repository[0;m[0;m
+-[32;1mGitaly correlation ID: 01KB2MG52V1JWRM51R0B44Y0XZ[0;m
+-[32;1mFetching changes with git depth set to 20...[0;m
+-Initialized empty Git repository in /builds/extern/vdscp/vdscp2526/vdscp04/.git/
+-[32;1mCreated fresh repository.[0;m
+-[32;1mChecking out 4f5f9960 as detached HEAD (ref is Amir)...[0;m
+-
+-[32;1mSkipping Git submodules setup[0;m
+-section_end:1764246430:get_sources
+-[0Ksection_start:1764246430:step_script
+-[0K[0K[36;1mExecuting "step_script" stage of the job script[0;m[0;m
+-[0KUsing effective pull policy of [always] for container gcc:12[0;m
+-[0KUsing docker image sha256:75d439866a6baa1292536147f2c01f33465ebe13a2f0038d0bc979abf4ff93e6 for gcc:12 with digest gcc@sha256:40f2fc7ef42f1a60ab215cb8ec7225992ae1c672a138ed5620e30f4796de5d29 ...[0;m
+-[32;1m$ echo "Preparing build directory..."[0;m
+-Preparing build directory...
+-[32;1m$ mkdir build[0;m
+-[32;1m$ cd build[0;m
+-[32;1m$ echo "Running CMake to configure the project..."[0;m
+-Running CMake to configure the project...
+-[32;1m$ cmake ..[0;m
+-/usr/bin/bash: line 169: cmake: command not found
+-section_end:1764246430:step_script
+-[0Ksection_start:1764246430:cleanup_file_variables
+-[0K[0K[36;1mCleaning up project directory and file based variables[0;m[0;m
+-section_end:1764246431:cleanup_file_variables
+-[0K[31;1mERROR: Job failed: exit code 1
+-[0;m
+Index: src/reachability/Reachability.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#ifndef VDSPROJECT_REACHABILITY_H\n#define VDSPROJECT_REACHABILITY_H\n\n#include <vector>\n\n#include \"ReachabilityInterface.h\"\n#include \"../ManagerInterface.h\"\n\nnamespace ClassProject {\n    class Reachability : public ReachabilityInterface {\n    private:\n        std::vector<BDD_ID> currentStateVars; // Current state bits (s0, s1, ...)\n        std::vector<BDD_ID> nextStateVars; // Next state bits (s0', s1', ...)\n        std::vector<BDD_ID> inputVars; // Input bits (x, ...)\n\n        std::vector<BDD_ID> visited_layers;\n        BDD_ID visited_global;\n\n        BDD_ID transitionRelation; // Tau (s, x, s')\n        BDD_ID initialState; // Characteristic Function of initial state\n\n    public:\n        explicit Reachability(unsigned int stateSize, unsigned int inputSize = 0); // Constructor\n\n        const std::vector<BDD_ID> &getStates() const override;\n\n        const std::vector<BDD_ID> &getInputs() const override;\n\n        bool isReachable(const std::vector<bool> &stateVector) override;\n\n        int stateDistance(const std::vector<bool> &stateVector) override;\n\n        void setTransitionFunctions(const std::vector<BDD_ID> &transitionFunctions) override;\n\n        void setInitState(const std::vector<bool> &stateVector) override;\n    };\n}\n#endif\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/reachability/Reachability.h b/src/reachability/Reachability.h
+--- a/src/reachability/Reachability.h	(revision 4f20a766abc0fc0375d2db30c0611ccfb116a81f)
++++ b/src/reachability/Reachability.h	(date 1770363897402)
+@@ -13,8 +13,8 @@
+         std::vector<BDD_ID> nextStateVars; // Next state bits (s0', s1', ...)
+         std::vector<BDD_ID> inputVars; // Input bits (x, ...)
+ 
+-        std::vector<BDD_ID> visited_layers;
+-        BDD_ID visited_global;
++        std::vector<BDD_ID> visited_layers; // Vector of visited states
++        BDD_ID visited_global; // Visited variable globalised
+ 
+         BDD_ID transitionRelation; // Tau (s, x, s')
+         BDD_ID initialState; // Characteristic Function of initial state

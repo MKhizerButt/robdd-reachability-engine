@@ -13,8 +13,8 @@ namespace ClassProject {
         std::vector<BDD_ID> nextStateVars; // Next state bits (s0', s1', ...)
         std::vector<BDD_ID> inputVars; // Input bits (x, ...)
 
-        std::vector<BDD_ID> visited_layers;
-        BDD_ID visited_global;
+        std::vector<BDD_ID> visited_layers; // Vector of visited states
+        BDD_ID visited_global; // Visited variable globalised
 
         BDD_ID transitionRelation; // Tau (s, x, s')
         BDD_ID initialState; // Characteristic Function of initial state
